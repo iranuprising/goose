@@ -78,7 +78,7 @@ func (c *Client) endpointStatsLine() string {
 		ep := &c.endpoints[i]
 		c.touchDailyWindow(ep, now)
 		today := fmt.Sprintf("today=%d", ep.dailyCount)
-		label := ShortScriptKey(ep.url)
+		label := shortScriptKey(ep.url)
 		if ep.account != "" {
 			// `@account` annotation lets the operator visually match each
 			// deployment to its account row in the accounts=[...] aggregation
@@ -183,5 +183,12 @@ func humanBytes(n uint64) string {
 		return fmt.Sprintf("%.1fMB", float64(n)/float64(k*k))
 	default:
 		return fmt.Sprintf("%.2fGB", float64(n)/float64(k*k*k))
+	}
+}
+
+func (c *Client) GetStats() map[string]uint64 {
+	return map[string]uint64{
+		"bytesOut": c.stats.bytesOut.Load(),
+		"bytesIn":  c.stats.bytesIn.Load(),
 	}
 }
