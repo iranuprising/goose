@@ -1368,6 +1368,13 @@ func isLikelyNonBatchRelayPayload(body []byte) bool {
 	if t[0] == '{' || t[0] == '[' || bytes.HasPrefix(t, []byte("HTTP/")) {
 		return true
 	}
+	// Sniff Code.gs v1.7.0 sentinels
+	if bytes.HasPrefix(l, []byte("exception:")) ||
+		bytes.HasPrefix(l, []byte("relay_loop_detected:")) ||
+		bytes.HasPrefix(l, []byte("upstream status")) ||
+		bytes.HasPrefix(l, []byte("upstream fetch error:")) {
+		return true
+	}
 	return false
 }
 

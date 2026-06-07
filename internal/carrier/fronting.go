@@ -314,6 +314,8 @@ func prewarmFrontedClients(googleIP string, sniHosts []string, caches map[string
 			addr := googleIP
 			if addr == "" {
 				addr = net.JoinHostPort(sniHost, "443")
+			} else if !strings.Contains(addr, ":") {
+				addr = net.JoinHostPort(addr, "443")
 			}
 			rawConn, err := dialer.DialContext(ctx, "tcp", addr)
 			if err != nil {
@@ -352,7 +354,11 @@ func newFrontedClient(googleIP, sniHost string, pollTimeout time.Duration, sessi
 	transport := &http.Transport{
 		DialContext: func(ctx context.Context, network, addr string) (net.Conn, error) {
 			if googleIP != "" {
-				return dialer.DialContext(ctx, "tcp", googleIP)
+				dialAddr := googleIP
+				if !strings.Contains(dialAddr, ":") {
+					dialAddr = net.JoinHostPort(dialAddr, "443")
+				}
+				return dialer.DialContext(ctx, "tcp", dialAddr)
 			}
 			return dialer.DialContext(ctx, network, addr)
 		},
