@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"github.com/kianmhz/GooseRelayVPN/internal/carrier"
-	"github.com/kianmhz/GooseRelayVPN/internal/config"
 	"github.com/kianmhz/GooseRelayVPN/internal/session"
 	"github.com/kianmhz/GooseRelayVPN/internal/socks"
 )
@@ -146,11 +145,12 @@ func GetStats() string {
 	if carr == nil {
 		return "{}"
 	}
-	in, out := carr.GetStats()
-	stats := map[string]interface{}{
+	stats := carr.GetStats()
+	in := stats["bytesIn"]; out := stats["bytesOut"]
+	m := map[string]interface{}{
 		"bytesIn":  in,
 		"bytesOut": out,
 	}
-	res, _ := json.Marshal(stats)
+	res, _ := json.Marshal(m)
 	return string(res)
 }

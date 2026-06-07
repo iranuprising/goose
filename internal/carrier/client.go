@@ -1490,4 +1490,3 @@ func ShortScriptKey(scriptURL string) string {
 	}
 	return "(unknown)"
 }
-func ShortScriptKey(s string) string { return s }
